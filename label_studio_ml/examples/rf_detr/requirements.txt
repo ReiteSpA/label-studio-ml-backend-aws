@@ -1,0 +1,7 @@
+# RF-DETR object detection (https://github.com/roboflow/rf-detr)
+# 1.6.2+ RFDETRLarge matches checkpoints trained as "large" (DINOv2-small, hidden 256).
+# 1.5.x RFDETRLarge is the old 768-d architecture and will not load those weights.
+rfdetr>=1.6.2,<2
+transformers>=5.1.0,<6.0.0
+# Pillow used for image loading and get_image_size
+Pillow>=9.0.0

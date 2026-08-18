@@ -1,0 +1,36 @@
+services:
+  rf_detr:
+    container_name: rf_detr_ml_backend
+    build:
+      context: .
+      args:
+        TEST_ENV: ${TEST_ENV}
+    environment:
+      - LABEL_STUDIO_URL=http://10.242.200.200:18080
+      - LABEL_STUDIO_API_KEY=3191d1fdb0d63db0fb11a8e88a22e4c968e8baa6
+      - LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/label-studio/files
+      # Path to your custom checkpoint (.pt / .pth). Leave empty to use pretrained COCO weights.
+      - CHECKPOINT_PATH=/label-studio/files/object_detection/object_detection_dataset_v0/training_results/rfdetr_large_in_object_detection_dataset_v0_train-v1/checkpoint_best_total.pth
+      # Model size when not using custom checkpoint: nano, small, medium, large
+      - MODEL_SIZE=large
+      # Optional: path to class names (JSON array or newline-separated). Default: COCO classes.
+      - CLASSES_FILE=/data/rfdetr_classes.txt
+      - INFERENCE_MODE=false
+      - SCORE_THRESHOLD=0.35
+      - DEVICE=cuda
+      - LOG_LEVEL=DEBUG
+      - WORKERS=1
+      - THREADS=8
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "9095:9090"
+    volumes:
+      - "./data/server:/data"
+      - /data/datasets:/label-studio/files:rw
